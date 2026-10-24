@@ -500,6 +500,7 @@ const AGENTS = [
 // ---------------------------------------------------------------------------
 
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function safeUrl(u){u=String(u||'').trim();if(!/^https?:\/\//i.test(u))return '';return u.replace(/["'<>\s\\`]/g,c=>encodeURIComponent(c));}
 function provenance(a){
   if(a.example) return "Illustrative example — the operator's own project, shown to demonstrate a listing";
   if(a.addedBy==="maker") return "Self-reported by the maker";
@@ -534,7 +535,7 @@ function render(agents, reviews){
     <p class="desc">${esc(a.desc)}</p>
     ${a.data?`<p class="desc" style="margin-top:6px;color:var(--ink-soft);font-size:14px;">Works with: ${esc(a.data)}</p>`:""}
     <div class="meta">
-      ${a.url?`<a href="${esc(a.url)}" rel="noopener">Visit</a>`:`<span class="provenance">No public site yet</span>`}
+      ${safeUrl(a.url)?`<a href="${esc(safeUrl(a.url))}" rel="noopener">Visit</a>`:`<span class="provenance">No public site yet</span>`}
       <span class="provenance">${esc(provenance(a))} · not independently tested</span>
     </div>
     ${reviewHtml(byAgent[(a.name||"").trim().toLowerCase()]||[])}
