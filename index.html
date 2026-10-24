@@ -52,6 +52,14 @@
   .check{display:flex; gap:10px; align-items:flex-start; font-size:14px; color:var(--ink-soft);}
   .check input{margin-top:3px;}
   ol.method{padding-left:22px; display:grid; gap:10px; font-size:15.5px; color:var(--ink);}
+
+  .reviews{margin-top:10px; border-top:1px dashed var(--line); padding-top:8px;}
+  .reviews summary{cursor:pointer; font-size:13.5px; color:var(--accent);}
+  .review{font-size:14px; margin:8px 0; padding:8px 10px; background:var(--card-alt, #faf9f7); border-radius:8px;}
+  .review .stars{color:#b8860b; letter-spacing:1px;}
+  .review .who{color:var(--ink-soft); font-size:12.5px;}
+  .reviews-note{font-size:12.5px; color:var(--ink-soft); margin-top:6px;}
+  .data-note{font-size:12.5px; color:var(--ink-soft); margin-top:10px;}
   footer{margin:48px 0 40px; padding-top:20px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft); display:grid; gap:6px;}
   footer a{color:var(--accent); text-decoration:none;}
 </style>
@@ -66,6 +74,8 @@
     <div class="cta-row">
       <a class="btn" href="#add">Add yours</a>
       <a class="btn ghost" href="#directory">Browse the directory</a>
+      <a class="btn ghost" href="#reviews-info">Submit a review</a>
+      <a class="btn ghost" href="reviewing.html">How we review</a>
     </div>
   </header>
 
@@ -79,12 +89,18 @@
 
   <section id="benchmark">
     <h2>The benchmark, when it exists</h2>
-    <p class="section-note">Nothing here has been benchmarked. The operator's draft ground rules, open for discussion before any of this is settled:</p>
+    <p class="section-note">Nothing here has been benchmarked. Ground rules:</p>
     <ol class="method">
-      <li><strong>Directory and benchmark stay separate.</strong> A listing would mean only "this exists" — never that an agent has been tested.</li>
-      <li><strong>Methodology published before results.</strong> The proposal is to publish an evaluation protocol first, drawing on published work such as Google Research's personal health agent evaluation (Nature, 2026).</li>
-      <li><strong>Testing only with the maker's knowledge.</strong> The proposal is to benchmark an agent only after its maker has agreed, and to label every result with the method, date, and limits of the test.</li>
+      <li><strong>Directory and benchmark stay separate.</strong> A listing means only "this exists" - never that an agent has been tested.</li>
+      <li><strong>Methodology published before results.</strong> The reviewing mechanism and criteria are published at <a href="reviewing.html">How we review</a>, adapted from Google Research's personal health agent evaluation (Nature, 2026).</li>
+      <li><strong>Testing only with the maker's knowledge.</strong> An agent gets a structured review only after its maker has agreed, and every result is labeled with the method, date, and limits of the test.</li>
     </ol>
+  </section>
+
+  <section id="reviews-info">
+    <h2>Community reviews</h2>
+    <p class="section-note">Anyone can submit a review of a listed agent. Reviews are individual experiences, held privately for moderation, and published only after a person approves them. They are not tests, expert ratings, or benchmark results - those live under <a href="reviewing.html">How we review</a> and nothing has been formally reviewed yet.</p>
+    <div class="form-shell"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSeIQk9zKgJAk_32GyZ8mYqiyNNrY8ubGGDhcBElVzh681q7tQ/viewform" rel="noopener">Submit a review</a></div>
   </section>
 
   <section id="add">
@@ -94,7 +110,7 @@
 
   <footer>
     <div>PHA Benchmark is operated by the maker of one of the agents listed here (Vital OS). Entries say who added them; that relationship is disclosed rather than hidden.</div>
-    <div>Sources for seeded entries: the official pages linked from each card (maker sites, app listings, help centers), gathered October 2026. Research context: <a href="https://www.nature.com/articles/s41586-026-11161-8">The anatomy of a personal health agent (Nature, 2026)</a> · <a href="https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent">Open-source reference code</a></div>
+    <div>Sources for seeded entries: the official pages linked from each card (maker sites, app listings, help centers), gathered October 2026. Research context: <a href="https://www.nature.com/articles/s41586-026-11161-8">The anatomy of a personal health agent (Nature, 2026)</a> · <a href="https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent">Open-source reference code</a> · <a href="reviewing.html">How we review: mechanism and criteria</a></div>
   </footer>
 
 </div>
@@ -107,6 +123,21 @@
 //   mode "github"      - requests as issues on the public repo (PUBLIC: no private
 //                        contact details - the issue itself is the reply channel)
 const SUBMISSIONS = { mode: "google-form", url: "https://forms.gle/fmSvj6DW53ssBnKo8" };
+
+// ---- Live data backend ------------------------------------------------------
+// Directory entries and published community reviews load from a public Google
+// Sheet ("anyone with the link can view"). The operator edits entries in the
+// Sheet; the embedded AGENTS array below is the fallback snapshot if the Sheet
+// is unreachable. Review submissions go to a private Google Form; the operator
+// publishes approved reviews by copying them into the Sheet's "reviews" tab.
+const DATA = {
+  sheetId: "1qzzUjXAQKus1_qGnE6jkIfnogktA1MMDpf_sIP2T0pc",
+  agentsUrl: function(){ return "https://docs.google.com/spreadsheets/d/" + this.sheetId + "/gviz/tq?tqx=out:json&headers=1&sheet=agents"; },
+  reviewsUrl: function(){ return "https://docs.google.com/spreadsheets/d/" + this.sheetId + "/gviz/tq?tqx=out:json&headers=1&sheet=reviews_published"; }
+};
+const REVIEW_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIQk9zKgJAk_32GyZ8mYqiyNNrY8ubGGDhcBElVzh681q7tQ/viewform";
+// ----------------------------------------------------------------------------
+
 // ---------------------------------------------------------------------------
 
 // ---- Directory data -------------------------------------------------------
@@ -475,8 +506,29 @@ function provenance(a){
   return "Added by the editor from public sources";
 }
 const cards=document.getElementById('cards');
-cards.innerHTML=AGENTS.map(a=>`
-  <article class="card${a.example?" example":""}">
+function parseGviz(raw){
+  const js = JSON.parse(raw.substring(raw.indexOf('(')+1, raw.lastIndexOf(')')));
+  const cols = js.table.cols.map(c=>c.label);
+  return js.table.rows.map(r=>{
+    const o={};
+    r.c.forEach((cell,i)=>{ o[cols[i]] = cell && cell.v != null ? String(cell.v) : ""; });
+    return o;
+  });
+}
+function reviewHtml(list){
+  if(!list.length) return "";
+  const items = list.map(r=>{
+    const n = parseInt(r.rating,10);
+    const stars = (n>=1 && n<=5) ? "\u2605".repeat(n)+"\u2606".repeat(5-n) : "";
+    return `<div class="review">${stars?`<span class="stars">${stars}</span> `:""}${esc(r.review)} <span class="who">- ${esc(r.display_name||"Anonymous")}, ${esc(r.published||"")}</span></div>`;
+  }).join("");
+  return `<details class="reviews"><summary>User reviews (${list.length})</summary>${items}<p class="reviews-note">Individual experiences, moderated before publication. Not tests or benchmark results.</p></details>`;
+}
+function render(agents, reviews){
+  const byAgent = {};
+  (reviews||[]).forEach(r=>{ const k=(r.agent||"").trim().toLowerCase(); if(k){ (byAgent[k]=byAgent[k]||[]).push(r); } });
+  cards.innerHTML=agents.map(a=>`
+  <article class="card${a.example===true||a.example==="true"?" example":""}">
     <div class="card-head"><h3>${esc(a.name)}</h3><span class="maker">by ${esc(a.maker)}</span></div>
     <div class="tags"><span class="tag">${esc(a.category)}</span><span class="tag status">${esc(a.status)}</span></div>
     <p class="desc">${esc(a.desc)}</p>
@@ -485,7 +537,32 @@ cards.innerHTML=AGENTS.map(a=>`
       ${a.url?`<a href="${esc(a.url)}" rel="noopener">Visit</a>`:`<span class="provenance">No public site yet</span>`}
       <span class="provenance">${esc(provenance(a))} · not independently tested</span>
     </div>
+    ${reviewHtml(byAgent[(a.name||"").trim().toLowerCase()]||[])}
   </article>`).join("");
+}
+async function loadData(){
+  try{
+    const [ar, rr] = await Promise.all([
+      fetch(DATA.agentsUrl()).then(r=>{ if(!r.ok) throw new Error("agents fetch"); return r.text(); }),
+      fetch(DATA.reviewsUrl()).then(r=>{ if(!r.ok) throw new Error("reviews fetch"); return r.text(); })
+    ]);
+    const agents = parseGviz(ar).filter(a=>a.name);
+    const reviews = parseGviz(rr).filter(r=>r.agent && r.review);
+    if(!agents.length) throw new Error("empty agents");
+    render(agents, reviews);
+    const note=document.createElement('p');
+    note.className='data-note';
+    note.textContent='Directory data loads live from the operator\'s public data sheet. Last embedded snapshot: October 24, 2026.';
+    cards.after(note);
+  }catch(e){
+    render(AGENTS, []);
+    const note=document.createElement('p');
+    note.className='data-note';
+    note.textContent='Live data sheet unreachable - showing the snapshot of October 24, 2026 (community reviews unavailable).';
+    cards.after(note);
+  }
+}
+loadData();
 
 // ---- Submission section, rendered per mode --------------------------------
 const area=document.getElementById('submit-area');
