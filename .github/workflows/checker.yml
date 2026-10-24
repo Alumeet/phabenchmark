@@ -1,0 +1,140 @@
+name: ADR 0003 ChatGPT PR checker
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: ChatGPT checker review
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    outputs:
+      verdict: ${{ steps.publish.outputs.verdict }}
+    steps:
+      - name: Fetch pull request diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number }}
+          REPOSITORY: ${{ inputs.repository || github.repository }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}" > pr.json
+          gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}" -H "Accept: application/vnd.github.v3.diff" > pr.diff
+          wc -c pr.diff
+
+      - name: Review and publish verdict
+        id: publish
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number }}
+          REPOSITORY: ${{ inputs.repository || github.repository }}
+          MODEL: gpt-5.6-luna
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          import re
+          import urllib.request
+          
+          repo = os.environ["REPOSITORY"]
+          pr_number = os.environ["PR_NUMBER"]
+          model = os.environ.get("MODEL") or "gpt-4.1-mini"
+          api_key = os.environ["OPENAI_API_KEY"]
+          github_token = os.environ["GITHUB_TOKEN"]
+          
+          with open("pr.json", "r", encoding="utf-8") as f:
+              pr = json.load(f)
+          with open("pr.diff", "r", encoding="utf-8", errors="replace") as f:
+              diff = f.read()
+          
+          max_diff_chars = 180_000
+          truncated = len(diff) > max_diff_chars
+          if truncated:
+              diff = diff[:max_diff_chars]
+          
+          system = (
+              "You are the ADR 0003 merge checker for this repository. Review the pull request diff "
+              "for correctness, data-loss risk, secret exposure, workflow/security boundary violations, "
+              "and missing tests. Return only a JSON object with keys verdict, summary, and findings. "
+              "verdict must be exactly one of approve, comment, request-changes. Use approve only when "
+              "the diff is safe to merge. Use request-changes for a concrete blocking defect. Use comment "
+              "for uncertainty or non-blocking notes. findings is an array of short strings."
+          )
+          user = (
+              f"Repository: {repo}\n"
+              f"PR #{pr_number}: {pr.get('title', '')}\n"
+              f"Base: {pr.get('base', {}).get('ref', '')}; head: {pr.get('head', {}).get('ref', '')}\n"
+              f"Diff truncated: {truncated}\n\n"
+              f"```diff\n{diff}\n```"
+          )
+          
+          request = urllib.request.Request(
+              "https://api.openai.com/v1/chat/completions",
+              data=json.dumps({
+                  "model": model,
+                  "response_format": {"type": "json_object"},
+                  "messages": [
+                      {"role": "system", "content": system},
+                      {"role": "user", "content": user},
+                  ],
+              }).encode(),
+              headers={
+                  "Authorization": f"Bearer {api_key}",
+                  "Content-Type": "application/json",
+              },
+          )
+          with urllib.request.urlopen(request, timeout=120) as response:
+              payload = json.load(response)
+          content = payload["choices"][0]["message"]["content"]
+          try:
+              verdict_doc = json.loads(content)
+          except json.JSONDecodeError:
+              match = re.search(r"\{.*\}", content, re.S)
+              verdict_doc = json.loads(match.group(0)) if match else {"verdict": "comment", "summary": content, "findings": []}
+          
+          verdict = str(verdict_doc.get("verdict", "comment")).strip().lower().replace("_", "-")
+          if verdict not in {"approve", "comment", "request-changes"}:
+              verdict = "comment"
+          event = {"approve": "APPROVE", "comment": "COMMENT", "request-changes": "REQUEST_CHANGES"}[verdict]
+          summary = str(verdict_doc.get("summary", "No summary supplied.")).strip()
+          findings = verdict_doc.get("findings", [])
+          if not isinstance(findings, list):
+              findings = [str(findings)]
+          body_lines = [
+              f"ADR 0003 checker verdict: **{verdict}**",
+              "",
+              summary,
+          ]
+          if findings:
+              body_lines += ["", "Findings:"] + [f"- {str(item)}" for item in findings[:20]]
+          if truncated:
+              body_lines += ["", "Note: the diff exceeded the checker context limit and was truncated before review."]
+          body = "\n".join(body_lines)[:60_000]
+          
+          review_request = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews",
+              data=json.dumps({"event": event, "body": body}).encode(),
+              headers={
+                  "Authorization": f"Bearer {github_token}",
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+          )
+          with urllib.request.urlopen(review_request, timeout=30) as response:
+              review = json.load(response)
+          
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"verdict={verdict}\n")
+          print(json.dumps({"verdict": verdict, "event": event, "review_id": review.get("id")}))
+          PY
