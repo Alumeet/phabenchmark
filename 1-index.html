@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PHA Benchmark — the directory of personal health agents</title>
+<meta name="description" content="A public directory of personal health agents. Anyone can list theirs. Listed never means tested.">
+<style>
+  :root{
+    --ink:#191817; --ink-soft:#5c5852; --line:#e4e0d8; --paper:#faf8f4; --card:#ffffff;
+    --accent:#0e5c46; --accent-soft:#e7f0ec; --warn:#8a5a00; --warn-soft:#faf3e3;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--paper); color:var(--ink); font:16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+  .wrap{max-width:880px; margin:0 auto; padding:0 20px;}
+  header.top{padding:44px 0 28px;}
+  .wordmark{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  h1{font-size:clamp(28px,5vw,42px); line-height:1.15; letter-spacing:-0.01em; margin:14px 0 12px;}
+  .lede{font-size:18px; color:var(--ink-soft); max-width:560px;}
+  .cta-row{margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;}
+  .btn{display:inline-block; padding:12px 22px; border-radius:8px; font-weight:600; font-size:15px; text-decoration:none; border:1px solid var(--ink); cursor:pointer; background:var(--ink); color:#fff;}
+  .btn.ghost{background:transparent; color:var(--ink);}
+  .btn[disabled]{opacity:.45; cursor:not-allowed;}
+  .btn:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  .notice{margin:32px 0; padding:14px 18px; background:var(--warn-soft); border:1px solid #eadfc4; border-radius:10px; color:var(--warn); font-size:15px;}
+  section{padding:26px 0 8px;}
+  h2{font-size:22px; letter-spacing:-0.01em; margin-bottom:6px;}
+  .section-note{color:var(--ink-soft); font-size:15px; margin-bottom:20px; max-width:600px;}
+  .cards{display:grid; gap:14px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 22px;}
+  .card.example{border-style:dashed; border-color:#c9c2b4;}
+  .card-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .card-head h3{font-size:18px;}
+  .maker{color:var(--ink-soft); font-size:14px;}
+  .tags{display:flex; gap:8px; margin:10px 0; flex-wrap:wrap;}
+  .tag{font-size:12.5px; font-weight:600; padding:3px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent);}
+  .tag.status{background:#f0ede6; color:var(--ink-soft);}
+  .card p.desc{font-size:15px; color:var(--ink);}
+  .card .meta{margin-top:12px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-size:13.5px;}
+  .card .meta a{color:var(--accent); font-weight:600; text-decoration:none;}
+  .card .meta a:hover{text-decoration:underline;}
+  .provenance{color:var(--ink-soft);}
+  .provenance::before{content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:#c9c2b4; margin-right:7px; vertical-align:1px;}
+  .form-shell{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px 22px;}
+  .form-shell .pending{margin-bottom:18px; padding:12px 16px; background:#f0ede6; border-radius:8px; font-size:14.5px; color:var(--ink);}
+  form{display:grid; gap:16px; opacity:.55; pointer-events:none;}
+  .field label{display:block; font-size:14px; font-weight:600; margin-bottom:5px;}
+  .field .hint{font-weight:400; color:var(--ink-soft); font-size:13px;}
+  .field input[type=text], .field input[type=email], .field input[type=url], .field select, .field textarea{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:15px; background:#fff; color:var(--ink);}
+  .field textarea{min-height:80px; resize:vertical;}
+  .check{display:flex; gap:10px; align-items:flex-start; font-size:14px; color:var(--ink-soft);}
+  .check input{margin-top:3px;}
+  ol.method{padding-left:22px; display:grid; gap:10px; font-size:15.5px; color:var(--ink);}
+  footer{margin:48px 0 40px; padding-top:20px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft); display:grid; gap:6px;}
+  footer a{color:var(--accent); text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="wordmark">PHA Benchmark</div>
+    <h1>Every personal health agent, in one place.</h1>
+    <p class="lede">A directory of agents that coach, triage, and make sense of personal health data. Open for any maker to list theirs.</p>
+    <div class="cta-row">
+      <a class="btn" href="#add">Add yours</a>
+      <a class="btn ghost" href="#directory">Browse the directory</a>
+    </div>
+  </header>
+
+  <div class="notice"><strong>Listed is not tested.</strong> A listing is not an evaluation, an endorsement, or a benchmark result. Each card says who added it and on what basis.</div>
+
+  <section id="directory">
+    <h2>The directory</h2>
+    <p class="section-note">These seed entries were added by the editor from public sources; the makers have not reviewed them. Submissions are open; maker-submitted entries say so on the card.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="benchmark">
+    <h2>The benchmark, when it exists</h2>
+    <p class="section-note">Nothing here has been benchmarked. The operator's draft ground rules, open for discussion before any of this is settled:</p>
+    <ol class="method">
+      <li><strong>Directory and benchmark stay separate.</strong> A listing would mean only "this exists" — never that an agent has been tested.</li>
+      <li><strong>Methodology published before results.</strong> The proposal is to publish an evaluation protocol first, drawing on published work such as Google Research's personal health agent evaluation (Nature, 2026).</li>
+      <li><strong>Testing only with the maker's knowledge.</strong> The proposal is to benchmark an agent only after its maker has agreed, and to label every result with the method, date, and limits of the test.</li>
+    </ol>
+  </section>
+
+  <section id="add">
+    <h2>Add yours</h2>
+    <div id="submit-area"></div>
+  </section>
+
+  <footer>
+    <div>PHA Benchmark is operated by the maker of one of the agents listed here (Vital OS). Entries say who added them; that relationship is disclosed rather than hidden.</div>
+    <div>Sources for seeded entries: <a href="https://www.nature.com/articles/s41586-026-11161-8">The anatomy of a personal health agent (Nature, 2026)</a> · <a href="https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent">Open-source reference code</a> · <a href="https://www.wysa.com/">Wysa</a></div>
+  </footer>
+
+</div>
+
+<script>
+// ---- Submission intake ----------------------------------------------------
+// One-line flip when the operator picks an intake path:
+//   mode "preview"     - non-submitting demo of the listing flow
+//   mode "google-form" - private queue: responses visible only to the operator (current)
+//   mode "github"      - requests as issues on the public repo (PUBLIC: no private
+//                        contact details - the issue itself is the reply channel)
+const SUBMISSIONS = { mode: "google-form", url: "https://forms.gle/fmSvj6DW53ssBnKo8" };
+// ---------------------------------------------------------------------------
+
+// ---- Directory data -------------------------------------------------------
+// addedBy: "editor"  = added from public sources, not reviewed by the maker
+// addedBy: "maker"   = submitted by the maker (none yet)
+// example: true      = illustrative placeholder, flagged on the card
+const AGENTS = [
+  {
+    name: "Personal Health Agent",
+    maker: "Google Research",
+    url: "https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent",
+    category: "Research",
+    status: "Research preview",
+    desc: "An orchestrator coordinating data-science, domain-expert, and coaching agents over personal health data. Published in Nature (Oct 2026) with open-source reference code.",
+    data: "Wearables, health records, chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Wysa",
+    maker: "Wysa",
+    url: "https://www.wysa.com/",
+    category: "Mental health",
+    status: "Live",
+    desc: "Anonymous AI chat for everyday mental health, backed by clinical studies, with escalation to human coaching.",
+    data: "Chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Vital OS",
+    maker: "This site's operator",
+    url: "",
+    category: "Companion & coaching",
+    status: "In development",
+    desc: "A personal health data platform with a coaching agent on WhatsApp. In private testing.",
+    data: "Wearables, chat",
+    addedBy: "editor",
+    example: true
+  }
+];
+// ---------------------------------------------------------------------------
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function provenance(a){
+  if(a.example) return "Illustrative example — the operator's own project, shown to demonstrate a listing";
+  if(a.addedBy==="maker") return "Self-reported by the maker";
+  return "Added by the editor from public sources";
+}
+const cards=document.getElementById('cards');
+cards.innerHTML=AGENTS.map(a=>`
+  <article class="card${a.example?" example":""}">
+    <div class="card-head"><h3>${esc(a.name)}</h3><span class="maker">by ${esc(a.maker)}</span></div>
+    <div class="tags"><span class="tag">${esc(a.category)}</span><span class="tag status">${esc(a.status)}</span></div>
+    <p class="desc">${esc(a.desc)}</p>
+    ${a.data?`<p class="desc" style="margin-top:6px;color:var(--ink-soft);font-size:14px;">Works with: ${esc(a.data)}</p>`:""}
+    <div class="meta">
+      ${a.url?`<a href="${esc(a.url)}" rel="noopener">Visit</a>`:`<span class="provenance">No public site yet</span>`}
+      <span class="provenance">${esc(provenance(a))} · not independently tested</span>
+    </div>
+  </article>`).join("");
+
+// ---- Submission section, rendered per mode --------------------------------
+const area=document.getElementById('submit-area');
+const previewForm=`
+  <div class="form-shell">
+    <div class="pending"><strong>Preview only.</strong> This form does not submit anything yet — there is no backend receiving it. It shows the listing flow as it would work once the operator opens submissions.</div>
+    <form novalidate>
+      <div class="field"><label>Agent name</label><input type="text" disabled></div>
+      <div class="field"><label>Maker <span class="hint">— company, lab, or your own name</span></label><input type="text" disabled></div>
+      <div class="field"><label>Website <span class="hint">— optional</span></label><input type="url" placeholder="https://" disabled></div>
+      <div class="field"><label>Category</label><select disabled><option>Companion &amp; coaching</option><option>Symptom &amp; triage</option><option>Mental health</option><option>Health data analysis</option><option>Research</option><option>Other</option></select></div>
+      <div class="field"><label>Status</label><select disabled><option>Live</option><option>Beta</option><option>In development</option><option>Research preview</option><option>Retired</option></select></div>
+      <div class="field"><label>What it does <span class="hint">— one or two sentences, plain English</span></label><textarea disabled></textarea></div>
+      <div class="field"><label>Data it works with <span class="hint">— e.g. wearables, chat, labs. Optional.</span></label><input type="text" disabled></div>
+      <div class="field"><label>Your email <span class="hint">— used only to reply about this listing</span></label><input type="email" disabled></div>
+      <label class="check"><input type="checkbox" disabled> <span>I'm the maker of this agent, or authorized to list it.</span></label>
+      <label class="check"><input type="checkbox" disabled> <span>I understand the listing is reviewed before publication and never presented as tested.</span></label>
+      <div class="form-actions"><button type="button" class="btn" disabled>Submissions open at launch</button></div>
+    </form>
+  </div>`;
+if(SUBMISSIONS.mode==="google-form"){
+  area.innerHTML=`
+    <p class="section-note">Listings go through a short form. Responses are private to the operator, a person reviews every listing, and nothing appears automatically.</p>
+    <div class="form-shell"><a class="btn" href="${esc(SUBMISSIONS.url)}" rel="noopener">Open the listing form</a></div>`;
+}else if(SUBMISSIONS.mode==="github"){
+  area.innerHTML=`
+    <p class="section-note">Listings are requested on the project's public repository. A person reviews every request before an entry appears. Requests are public — don't include private contact details; the conversation happens on the request itself.</p>
+    <div class="form-shell"><a class="btn" href="${esc(SUBMISSIONS.url)}" rel="noopener">Open a listing request</a></div>`;
+}else{
+  area.innerHTML=`<p class="section-note">This is the listing form as it would work. Submissions are not open yet.</p>`+previewForm;
+}
+</script>
+</body>
+</html>
