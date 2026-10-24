@@ -94,7 +94,7 @@
 
   <footer>
     <div>PHA Benchmark is operated by the maker of one of the agents listed here (Vital OS). Entries say who added them; that relationship is disclosed rather than hidden.</div>
-    <div>Sources for seeded entries: <a href="https://www.nature.com/articles/s41586-026-11161-8">The anatomy of a personal health agent (Nature, 2026)</a> · <a href="https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent">Open-source reference code</a> · <a href="https://www.wysa.com/">Wysa</a></div>
+    <div>Sources for seeded entries: the official pages linked from each card (maker sites, app listings, help centers), gathered October 2026. Research context: <a href="https://www.nature.com/articles/s41586-026-11161-8">The anatomy of a personal health agent (Nature, 2026)</a> · <a href="https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent">Open-source reference code</a></div>
   </footer>
 
 </div>
@@ -115,13 +115,113 @@ const SUBMISSIONS = { mode: "google-form", url: "https://forms.gle/fmSvj6DW53ssB
 // example: true      = illustrative placeholder, flagged on the card
 const AGENTS = [
   {
-    name: "Personal Health Agent",
-    maker: "Google Research",
-    url: "https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent",
-    category: "Research",
-    status: "Research preview",
-    desc: "An orchestrator coordinating data-science, domain-expert, and coaching agents over personal health data. Published in Nature (Oct 2026) with open-source reference code.",
-    data: "Wearables, health records, chat",
+    name: "Nori",
+    maker: "Nori (YC F25)",
+    url: "https://nori.ai/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI health coach that pulls Apple Health, wearables, labs and medical records into a personalized daily plan, and answers questions about your data.",
+    data: "Apple Health, wearables, labs, medical records",
+    addedBy: "editor"
+  },
+  {
+    name: "Vora",
+    maker: "Vora AI Inc",
+    url: "https://vora.inc/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI longevity coach that unifies wearable data, meal logging and bloodwork into one coaching layer, on iOS and Android.",
+    data: "Wearables, nutrition, labs",
+    addedBy: "editor"
+  },
+  {
+    name: "WHOOP Coach",
+    maker: "WHOOP",
+    url: "https://www.whoop.com/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "Coaching feature of the WHOOP membership that answers health and fitness questions using your recovery, strain, sleep and stress data.",
+    data: "WHOOP wearable data",
+    addedBy: "editor"
+  },
+  {
+    name: "Oura Advisor",
+    maker: "Oura",
+    url: "https://ouraring.com/blog/oura-advisor/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI assistant inside the Oura app that answers questions about your sleep, activity, readiness and resilience trends, with charts of your own data. A proprietary women's-health model was added in April 2026.",
+    data: "Oura Ring data",
+    addedBy: "editor"
+  },
+  {
+    name: "Google Health Coach",
+    maker: "Google",
+    url: "https://blog.google/products-and-platforms/products/google-health/google-health-fitbit/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI coach in the Google Health app (formerly the Fitbit app) covering fitness, sleep and wellness, grounded in wearable, phone and medical-record data. Public since May 2026 with Google Health Premium.",
+    data: "Wearables, Health Connect, Apple Health, medical records",
+    addedBy: "editor"
+  },
+  {
+    name: "Thrive AI Health Coach",
+    maker: "Thrive AI Health",
+    url: "https://www.thriveaihealth.com/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI coach backed by Thrive Global and the OpenAI Startup Fund. Builds a personalized habits program from your wearable data, with daily check-ins and motivational interviewing.",
+    data: "Wearables, chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Kotcha",
+    maker: "Kotcha",
+    url: "https://www.kotcha.com/en",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "Adaptive running coach for road and trail, co-founded by Eliud Kipchoge and Kilian Jornet. Personalized plans that adjust to your body, pace and race goal.",
+    data: "Garmin, Huawei",
+    addedBy: "editor"
+  },
+  {
+    name: "Lark",
+    maker: "Lark Health",
+    url: "https://www.lark.com/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "24/7 digital coaching for weight, prediabetes, type 2 diabetes and blood pressure, free with eligible insurance, paired with connected scales, glucometers and monitors.",
+    data: "Connected devices, chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Ness",
+    maker: "Ness",
+    url: "https://ness-health.com/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "iPhone AI health coach over Apple Health data: daily sleep, recovery and strain scores, trend views, food logging and a chat about your own metrics.",
+    data: "Apple Health",
+    addedBy: "editor"
+  },
+  {
+    name: "Ebb",
+    maker: "Headspace",
+    url: "https://www.headspace.com/ai-mental-health-companion",
+    category: "Mental health",
+    status: "Live",
+    desc: "Empathetic AI companion inside the Headspace app for paid members 18+ in the US, UK, Canada and Australia. Reflects with you and recommends meditations and exercises.",
+    data: "Chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Ash",
+    maker: "Slingshot AI",
+    url: "https://www.talktoash.com/",
+    category: "Mental health",
+    status: "Live",
+    desc: "AI built for mental health: a 24/7 support chat that learns, grows and adapts across conversations.",
+    data: "Chat",
     addedBy: "editor"
   },
   {
@@ -135,6 +235,136 @@ const AGENTS = [
     addedBy: "editor"
   },
   {
+    name: "Woebot",
+    maker: "Woebot Health",
+    url: "https://woebothealth.com/",
+    category: "Mental health",
+    status: "Retired",
+    desc: "Early CBT-based mental-health chatbot. The consumer app has ended; Woebot is now offered only through provider, employer or partner access codes.",
+    data: "Chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Youper",
+    maker: "Youper",
+    url: "https://www.youper.ai/",
+    category: "Mental health",
+    status: "Retired",
+    desc: "AI emotional-health chatbot and mood journal. The service shut down on September 30, 2026.",
+    data: "Chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Ada",
+    maker: "Ada Health",
+    url: "https://ada.com/",
+    category: "Symptom & triage",
+    status: "Live",
+    desc: "Symptom assessment app whose reasoning engine compares your answers against a medical knowledge base and reports likely causes.",
+    data: "Symptoms, health profile",
+    addedBy: "editor"
+  },
+  {
+    name: "Buoy",
+    maker: "Buoy Health",
+    url: "https://www.buoyhealth.com/",
+    category: "Symptom & triage",
+    status: "Live",
+    desc: "AI symptom checker that asks questions to narrow down what might be wrong and helps find the right care.",
+    data: "Symptoms",
+    addedBy: "editor"
+  },
+  {
+    name: "Doctronic",
+    maker: "Doctronic",
+    url: "https://www.doctronic.ai/",
+    category: "Symptom & triage",
+    status: "Live",
+    desc: "Free, anonymous AI doctor that proposes treatment plans from symptoms, with optional paid video visits with licensed doctors.",
+    data: "Symptoms, chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Health in ChatGPT",
+    maker: "OpenAI",
+    url: "https://help.openai.com/en/articles/20001036-health-in-chatgpt",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "Health experience in ChatGPT, rolling out to US users 18+ on web and iOS: connect Apple Health and medical records, see a dashboard and ask questions grounded in your data.",
+    data: "Apple Health, medical records",
+    addedBy: "editor"
+  },
+  {
+    name: "Superpower",
+    maker: "Superpower",
+    url: "https://www.superpower.com/",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "Health membership combining 100+ biomarker lab tests with a dashboard across labs and wearables. Kin, its AI, answers questions with your health context.",
+    data: "Labs, wearables",
+    addedBy: "editor"
+  },
+  {
+    name: "Guava",
+    maker: "Guava Health",
+    url: "https://guavahealth.com/",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "Personal health record app that centralizes patient portals, labs, imaging and devices, with insights into symptom triggers and trends.",
+    data: "Medical records, labs, devices",
+    addedBy: "editor"
+  },
+  {
+    name: "Welltory",
+    maker: "Welltory",
+    url: "https://welltory.com/",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "Analyzes HRV and other biomarkers from wearables and apps to decode stress and energy patterns and suggest daily guidance.",
+    data: "Wearables, HRV",
+    addedBy: "editor"
+  },
+  {
+    name: "Strava Athlete Intelligence",
+    maker: "Strava",
+    url: "https://support.strava.com/en-us/articles/15401629-athlete-intelligence-on-strava",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "Generative-AI summaries of runs, rides, walks and hikes, with deeper analysis of pace, heart rate and power. Subscriber feature, mobile only.",
+    data: "Activity data",
+    addedBy: "editor"
+  },
+  {
+    name: "Garmin Connect+ Active Intelligence",
+    maker: "Garmin",
+    url: "https://www.garmin.com/en-US/newsroom/press-release/wearables-health/elevate-your-health-and-fitness-goals-with-garmin-connect/",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "AI-powered insights and suggestions in the Garmin Connect app based on your health and activity data, part of the paid Garmin Connect+ plan.",
+    data: "Garmin wearable data",
+    addedBy: "editor"
+  },
+  {
+    name: "Bevel",
+    maker: "Bevel",
+    url: "https://bevel.health/",
+    category: "Health data analysis",
+    status: "Live",
+    desc: "iOS app that makes sense of wearable and bloodwork data, turning it into strain, sleep and recovery metrics and coaching.",
+    data: "Wearables, labs",
+    addedBy: "editor"
+  },
+  {
+    name: "Personal Health Agent",
+    maker: "Google Research",
+    url: "https://github.com/Google-Health/consumer-health-research/tree/main/personal_health_agent",
+    category: "Research",
+    status: "Research preview",
+    desc: "An orchestrator coordinating data-science, domain-expert, and coaching agents over personal health data. Published in Nature (Oct 2026) with open-source reference code.",
+    data: "Wearables, health records, chat",
+    addedBy: "editor"
+  },
+  {
     name: "Vital OS",
     maker: "This site's operator",
     url: "",
@@ -142,8 +372,98 @@ const AGENTS = [
     status: "In development",
     desc: "A personal health data platform with a coaching agent on WhatsApp. In private testing.",
     data: "Wearables, chat",
-    addedBy: "editor",
-    example: true
+    example: true,
+    addedBy: "editor"
+  },
+  {
+    name: "Soma",
+    maker: "Soma",
+    url: "https://www.soma4health.com/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "iPhone app whose fitness and nutrition agents read the data already on your phone and hand you one plan a day, with the reason behind it.",
+    data: "Apple Health, wearables",
+    addedBy: "editor"
+  },
+  {
+    name: "Healify",
+    maker: "Healify",
+    url: "https://www.healify.ai/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "iPhone AI health coach that turns your sleep, activity and stress data into daily guidance, alerts and answers.",
+    data: "Apple Health",
+    addedBy: "editor"
+  },
+  {
+    name: "BodyBuddy",
+    maker: "BodyBuddy",
+    url: "https://bodybuddy.app/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI coach that texts you to keep meals, workouts, symptoms and your doctor's plan on track.",
+    data: "Chat, symptom logs",
+    addedBy: "editor"
+  },
+  {
+    name: "Neura",
+    maker: "Neura",
+    url: "https://neura.health/",
+    category: "Companion & coaching",
+    status: "Beta",
+    desc: "Personalized health copilot that combines your schedule, habits, wearables and lab results into a 1-of-1 daily plan. GDPR-compliant.",
+    data: "Wearables, labs, chat",
+    addedBy: "editor"
+  },
+  {
+    name: "Simple",
+    maker: "Simple",
+    url: "https://simple.life/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "Weight-loss app built around Coach Avo, a personal AI coach with daily actions, check-ins and nutrition feedback.",
+    data: "Food logs, fasting, activity",
+    addedBy: "editor"
+  },
+  {
+    name: "Helsa",
+    maker: "Helsa",
+    url: "https://helsa.health/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "GLP-1 companion app: snap a meal for protein and macro feedback, with an AI food log shaped for GLP-1 weight-loss journeys.",
+    data: "Meal photos, nutrition",
+    addedBy: "editor"
+  },
+  {
+    name: "Sword Health",
+    maker: "Sword Health",
+    url: "https://swordhealth.com/",
+    category: "Companion & coaching",
+    status: "Live",
+    desc: "AI Care platform for muscle and joint pain, women's health, cardiometabolic health and mental health. Phoenix, its AI care specialist, works alongside human clinicians. Access through employers and health plans.",
+    data: "Chat, movement assessment",
+    addedBy: "editor"
+  },
+  {
+    name: "Symptomate",
+    maker: "Infermedica",
+    url: "https://symptomate.com/",
+    category: "Symptom & triage",
+    status: "Live",
+    desc: "Self-service symptom checker made by doctors: add symptoms, answer questions, get likely conditions and the recommended level of care.",
+    data: "Symptoms",
+    addedBy: "editor"
+  },
+  {
+    name: "Mediktor",
+    maker: "Mediktor",
+    url: "https://mediktor.com/",
+    category: "Symptom & triage",
+    status: "Live",
+    desc: "AI medical agent for symptom checking and triage used by insurers and hospitals, with a public checker on its site.",
+    data: "Symptoms",
+    addedBy: "editor"
   }
 ];
 // ---------------------------------------------------------------------------
